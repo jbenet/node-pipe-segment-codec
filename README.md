@@ -4,6 +4,7 @@ See [pipe-segment](https://github.com/jbenet/node-pipe-segment).
 
 This creates a codec segment, an encode/decode transform stream pair. The interfaces are duplex streams for connecting convenience.
 
+![](https://www.evernote.com/shard/s198/sh/d57a9e97-7794-475e-9667-24d75e9ebd93/d31f5eb9b50c6099ba6671abaaf06025/deep/0/Node-Pipeline-Units---Issue--24---jbenet-random-ideas.png)
 
 ## Install
 
