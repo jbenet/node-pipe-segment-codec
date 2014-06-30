@@ -1,0 +1,30 @@
+{
+  "name": "pipe-segment-codec",
+  "version": "0.1.0",
+  "description": "pipe segment codec",
+  "main": "index.js",
+  "dependencies": {
+    "duplexer2.jbenet": "^0.0.3",
+    "pipe-segment": "^0.1.2",
+    "through2": "^0.5.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node try.js"
+  },
+  "keywords": [
+    "pipe",
+    "segment",
+    "codec"
+  ],
+  "author": "Juan Benet <juan@benet.ai> (http://juan.benet.ai/)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbenet/node-pipe-segment-codec.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jbenet/node-pipe-segment-codec/issues"
+  },
+  "homepage": "https://github.com/jbenet/node-pipe-segment-codec"
+}
