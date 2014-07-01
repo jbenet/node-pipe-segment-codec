@@ -24,8 +24,8 @@ function codec(opts, encode, decode) {
   return segment({
     encode: enc2,
     decode: dec2,
-    encoded: duplexer2(o, dec2, enc1),
-    decoded: duplexer2(o, enc1, dec2),
+    encoded: duplexer2(o, dec1, enc1),
+    decoded: duplexer2(o, enc1, dec1),
     encodeErrors: errE,
     decodeErrors: errD,
   })
