@@ -18,6 +18,8 @@ function codec(opts, encode, decode) {
 
   var o = {objectMode: true, highWaterMark: 16}
   return segment({
+    encode: enc,
+    decode: dec,
     encoded: duplexer2(o, dec, enc),
     decoded: duplexer2(o, enc, dec),
     encodeErrors: errE,
