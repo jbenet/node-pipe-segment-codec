@@ -41,3 +41,22 @@ s.encoded.write('[4, 5, 6]')
 s.encoded.write('{a: 1}') // invalid json
 s.encoded.write('invalid{a: 1}') // invalid json
 s.encoded.write('[1, 2, 3, [') // invalid json
+
+
+var s = codecSegment.transform(encode, decode)
+
+// wire segment interfaces
+s.encode.pipe(logthrough('encode')).pipe(s.decode)
+s.decode.pipe(logthrough('decode'))
+s.encodeErrors.pipe(logthrough('encode error'))
+s.decodeErrors.pipe(logthrough('decode error'))
+
+s.encode.write({a: 1, b: 2, c: 3})
+s.encode.write(100)
+s.encode.write([1, 2, 3])
+s.decode.write('{"d":4}')
+s.decode.write('200')
+s.decode.write('[4, 5, 6]')
+s.decode.write('{a: 1}') // invalid json
+s.decode.write('invalid{a: 1}') // invalid json
+s.decode.write('[1, 2, 3, [') // invalid json

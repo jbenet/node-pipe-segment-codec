@@ -3,6 +3,19 @@ var through2 = require('through2')
 var duplexer2 = require('duplexer2.jbenet')
 
 module.exports = codec
+
+// options:
+// - async: asynchronous encode/decode functions
+// - transform: use a "transform streams interface":
+//
+//     --------- `encode` transform -------->
+//     <-------- `decode` transform -------->
+//
+//        instead of a "duplex streams interface":
+//
+//     ----->  `decoded`  `encoded`  ----->
+//     <-----   duplex      duplex   <-----
+//
 function codec(opts, encode, decode) {
   if (arguments.length == 2) {
     decode = encode
@@ -15,20 +28,29 @@ function codec(opts, encode, decode) {
   var safe = opts.async ? asyncSafe : syncSafe
 
   // make two pairs of encoders (for different interfaces)
-  var enc1 = through2.obj(safe(encode, errE))
-  var dec1 = through2.obj(safe(decode, errD))
-  var enc2 = through2.obj(safe(encode, errE))
-  var dec2 = through2.obj(safe(decode, errD))
+  var enc = through2.obj(safe(encode, errE))
+  var dec = through2.obj(safe(decode, errD))
 
-  var o = {objectMode: true, highWaterMark: 16}
-  return segment({
-    encode: enc2,
-    decode: dec2,
-    encoded: duplexer2(o, dec1, enc1),
-    decoded: duplexer2(o, enc1, dec1),
-    encodeErrors: errE,
-    decodeErrors: errD,
-  })
+  var seg
+  if (opts.transform) {
+    seg = segment({
+      encode: enc,
+      decode: dec,
+      encodeErrors: errE,
+      decodeErrors: errD,
+    })
+
+  } else { // duplex
+    var o = {objectMode: true, highWaterMark: 16}
+    seg = segment({
+      encoded: duplexer2(o, dec, enc),
+      decoded: duplexer2(o, enc, dec),
+      encodeErrors: errE,
+      decodeErrors: errD,
+    })
+  }
+
+  return seg
 
   function syncSafe(func, errs) {
     return function(data, e, cb) {
@@ -51,4 +73,26 @@ function codec(opts, encode, decode) {
       })
     }
   }
+}
+
+codec.transform = function(opts, encode, decode) {
+  if (arguments.length == 2) {
+    decode = encode
+    encode = opts
+    opts = {}
+  }
+
+  opts.transform = true
+  return codec(opts, encode, decode)
+}
+
+codec.duplex = function(opts, encode, decode) {
+  if (arguments.length == 2) {
+    decode = encode
+    encode = opts
+    opts = {}
+  }
+
+  opts.transform = false
+  return codec(opts, encode, decode)
 }
