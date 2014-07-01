@@ -50,6 +50,9 @@ function codec(opts, encode, decode) {
     })
   }
 
+  // expose functions in case user wants them back
+  seg.encodefn = encode
+  seg.decodefn = decode
   return seg
 
   function syncSafe(func, errs) {
