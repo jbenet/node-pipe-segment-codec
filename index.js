@@ -13,15 +13,19 @@ function codec(opts, encode, decode) {
   var errE = through2.obj() // passthrough
   var errD = through2.obj() // passthrough
   var safe = opts.async ? asyncSafe : syncSafe
-  var enc = through2.obj(safe(encode, errE))
-  var dec = through2.obj(safe(decode, errD))
+
+  // make two pairs of encoders (for different interfaces)
+  var enc1 = through2.obj(safe(encode, errE))
+  var dec1 = through2.obj(safe(decode, errD))
+  var enc2 = through2.obj(safe(encode, errE))
+  var dec2 = through2.obj(safe(decode, errD))
 
   var o = {objectMode: true, highWaterMark: 16}
   return segment({
-    encode: enc,
-    decode: dec,
-    encoded: duplexer2(o, dec, enc),
-    decoded: duplexer2(o, enc, dec),
+    encode: enc2,
+    decode: dec2,
+    encoded: duplexer2(o, dec2, enc1),
+    decoded: duplexer2(o, enc1, dec2),
     encodeErrors: errE,
     decodeErrors: errD,
   })
